@@ -182,6 +182,7 @@ class SfCalendar extends StatefulWidget {
     this.scheduleViewMonthHeaderBuilder,
     this.monthCellBuilder,
     this.appointmentBuilder,
+    this.enableTimeRuler = true,
     this.timeRegionBuilder,
     this.headerDateFormat,
     this.headerStyle = const CalendarHeaderStyle(),
@@ -2293,6 +2294,9 @@ class SfCalendar extends StatefulWidget {
   ///
   /// ```
   final bool allowAppointmentResize;
+
+
+  final bool enableTimeRuler;
 
   /// Called whenever the appointment starts to resizing in [SfCalendar].
   ///
@@ -8550,7 +8554,7 @@ class _SfCalendarState extends State<SfCalendar>
             _timelineMonthWeekNumberNotifier,
             _updateCalendarState,
             _getCalendarStateDetails,
-            key: _customScrollViewKey,
+            key: _customScrollViewKey, enableTimeRuler: widget.enableTimeRuler,
           )),
     );
   }
@@ -8565,61 +8569,61 @@ class _SfCalendarState extends State<SfCalendar>
         (_currentViewVisibleDates.length / 2).truncate()];
 
     final List<Widget> children = <Widget>[
-      Positioned(
-        top: 0,
-        right: 0,
-        left: 0,
-        height: widget.headerHeight,
-        child: Container(
-            color: widget.headerStyle.backgroundColor ??
-                _calendarTheme.headerBackgroundColor,
-            child: _CalendarHeaderView(
-                _currentViewVisibleDates,
-                widget.headerStyle,
-                currentViewDate,
-                _view,
-                widget.monthViewSettings.numberOfWeeksInView,
-                _calendarTheme,
-                isRTL,
-                _locale,
-                widget.showNavigationArrow,
-                _controller,
-                widget.maxDate,
-                widget.minDate,
-                width,
-                widget.headerHeight,
-                widget.timeSlotViewSettings.nonWorkingDays,
-                widget.monthViewSettings.navigationDirection,
-                widget.showDatePickerButton,
-                widget.showTodayButton,
-                _showHeader,
-                widget.allowedViews,
-                widget.allowViewNavigation,
-                _localizations,
-                _removeDatePicker,
-                _headerUpdateNotifier,
-                _viewChangeNotifier,
-                _handleOnTapForHeader,
-                _handleOnLongPressForHeader,
-                widget.todayHighlightColor,
-                _textScaleFactor,
-                _isMobilePlatform,
-                widget.headerDateFormat,
-                !_isNeedLoadMore,
-                widget.todayTextStyle,
-                widget.showWeekNumber,
-                widget.weekNumberStyle,
-                _timelineMonthWeekNumberNotifier,
-                widget.cellBorderColor,
-                widget.timeSlotViewSettings.numberOfDaysInView)),
-      ),
-      _addResourcePanel(isResourceEnabled, resourceViewSize, height, isRTL),
+      // Positioned(
+      //   top: 0,
+      //   right: 0,
+      //   left: 0,
+      //   height: widget.headerHeight,
+      //   child: Container(
+      //       color: widget.headerStyle.backgroundColor ??
+      //           _calendarTheme.headerBackgroundColor,
+      //       child: _CalendarHeaderView(
+      //           _currentViewVisibleDates,
+      //           widget.headerStyle,
+      //           currentViewDate,
+      //           _view,
+      //           widget.monthViewSettings.numberOfWeeksInView,
+      //           _calendarTheme,
+      //           isRTL,
+      //           _locale,
+      //           widget.showNavigationArrow,
+      //           _controller,
+      //           widget.maxDate,
+      //           widget.minDate,
+      //           width,
+      //           widget.headerHeight,
+      //           widget.timeSlotViewSettings.nonWorkingDays,
+      //           widget.monthViewSettings.navigationDirection,
+      //           widget.showDatePickerButton,
+      //           widget.showTodayButton,
+      //           _showHeader,
+      //           widget.allowedViews,
+      //           widget.allowViewNavigation,
+      //           _localizations,
+      //           _removeDatePicker,
+      //           _headerUpdateNotifier,
+      //           _viewChangeNotifier,
+      //           _handleOnTapForHeader,
+      //           _handleOnLongPressForHeader,
+      //           widget.todayHighlightColor,
+      //           _textScaleFactor,
+      //           _isMobilePlatform,
+      //           widget.headerDateFormat,
+      //           !_isNeedLoadMore,
+      //           widget.todayTextStyle,
+      //           widget.showWeekNumber,
+      //           widget.weekNumberStyle,
+      //           _timelineMonthWeekNumberNotifier,
+      //           widget.cellBorderColor,
+      //           widget.timeSlotViewSettings.numberOfDaysInView)),
+      // ),
+      // _addResourcePanel(isResourceEnabled, resourceViewSize, height, isRTL),
       _addCustomScrollView(widget.headerHeight, resourceViewSize, isRTL,
           isResourceEnabled, width, height, agendaHeight),
       _addAgendaView(agendaHeight, widget.headerHeight + height - agendaHeight,
           width, isRTL),
-      _addDatePicker(widget.headerHeight, isRTL),
-      _getCalendarViewPopup(),
+      // _addDatePicker(widget.headerHeight, isRTL),
+      // _getCalendarViewPopup(),
     ];
     if (_isNeedLoadMore && widget.loadMoreWidgetBuilder != null) {
       children.add(Container(

@@ -58,8 +58,11 @@ class CustomCalendarScrollView extends StatefulWidget {
       this.timelineMonthWeekNumberNotifier,
       this.updateCalendarState,
       this.getCalendarState,
-      {Key? key})
+      {Key? key, required this.enableTimeRuler})
       : super(key: key);
+
+
+  final bool  enableTimeRuler;
 
   /// Holds the calendar instance used to get the calendar properties.
   final SfCalendar calendar;
@@ -203,6 +206,7 @@ class CustomCalendarScrollView extends StatefulWidget {
 
 class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
     with TickerProviderStateMixin {
+
   // three views to arrange the view in vertical/horizontal direction and handle the swiping
   late _CalendarView _currentView, _nextView, _previousView;
 
@@ -2928,6 +2932,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
   List<Widget> _addViews() {
     if (_children.isEmpty) {
       _previousView = _CalendarView(
+          enableTimeRuler: widget.enableTimeRuler,
         widget.calendar,
         widget.view,
         _previousViewVisibleDates,
@@ -2962,6 +2967,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
         key: _previousViewKey,
       );
       _currentView = _CalendarView(
+          enableTimeRuler: widget.enableTimeRuler,
         widget.calendar,
         widget.view,
         _visibleDates,
@@ -2995,6 +3001,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
         key: _currentViewKey,
       );
       _nextView = _CalendarView(
+        enableTimeRuler: widget.enableTimeRuler,
         widget.calendar,
         widget.view,
         _nextViewVisibleDates,
@@ -3098,7 +3105,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
         (UpdateCalendarStateDetails details) {
           _getCalendarViewStateDetails(details);
         },
-        key: viewKey,
+        key: viewKey, enableTimeRuler: widget.enableTimeRuler,
       );
 
       _children[index] = view;
@@ -3110,6 +3117,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
       if (widget.view != CalendarView.month &&
           !CalendarViewHelper.isTimelineView(widget.view)) {
         view = _CalendarView(
+            enableTimeRuler: widget.enableTimeRuler,
           widget.calendar,
           widget.view,
           visibleDates,
@@ -3147,6 +3155,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
         /// Update the calendar view when calendar properties like appointment
         /// text style dynamically changed.
         view = _CalendarView(
+          enableTimeRuler: widget.enableTimeRuler,
           widget.calendar,
           widget.view,
           visibleDates,
@@ -3242,7 +3251,7 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
         (UpdateCalendarStateDetails details) {
           _getCalendarViewStateDetails(details);
         },
-        key: viewKey,
+        key: viewKey, enableTimeRuler: widget.enableTimeRuler,
       );
 
       _children[index] = view;
@@ -5508,34 +5517,35 @@ class _CustomCalendarScrollViewState extends State<CustomCalendarScrollView>
 @immutable
 class _CalendarView extends StatefulWidget {
   const _CalendarView(
-      this.calendar,
-      this.view,
-      this.visibleDates,
-      this.width,
-      this.height,
-      this.agendaSelectedDate,
-      this.locale,
-      this.calendarTheme,
-      this.themeData,
-      this.regions,
-      this.blackoutDates,
-      this.focusNode,
-      this.removePicker,
-      this.allowViewNavigation,
-      this.controller,
-      this.resourcePanelScrollController,
-      this.resourceCollection,
-      this.textScaleFactor,
-      this.isMobilePlatform,
-      this.minDate,
-      this.maxDate,
-      this.localizations,
-      this.timelineMonthWeekNumberNotifier,
-      this.dragDetails,
-      this.updateCalendarState,
-      this.getCalendarState,
-      {Key? key})
-      : super(key: key);
+    this.calendar,
+    this.view,
+    this.visibleDates,
+    this.width,
+    this.height,
+    this.agendaSelectedDate,
+    this.locale,
+    this.calendarTheme,
+    this.themeData,
+    this.regions,
+    this.blackoutDates,
+    this.focusNode,
+    this.removePicker,
+    this.allowViewNavigation,
+    this.controller,
+    this.resourcePanelScrollController,
+    this.resourceCollection,
+    this.textScaleFactor,
+    this.isMobilePlatform,
+    this.minDate,
+    this.maxDate,
+    this.localizations,
+    this.timelineMonthWeekNumberNotifier,
+    this.dragDetails,
+    this.updateCalendarState,
+    this.getCalendarState, {
+    Key? key,
+    required this.enableTimeRuler,
+  }) : super(key: key);
 
   final List<DateTime> visibleDates;
   final List<CalendarTimeRegion>? regions;
@@ -5559,6 +5569,7 @@ class _CalendarView extends StatefulWidget {
   final List<CalendarResource>? resourceCollection;
   final double textScaleFactor;
   final bool isMobilePlatform;
+  final bool enableTimeRuler;
   final DateTime minDate;
   final DateTime maxDate;
   final SfLocalizations localizations;
@@ -6001,7 +6012,7 @@ class _CalendarViewState extends State<_CalendarView>
       }
     }
 
-    _updateAllDayHeight(isCurrentView);
+    // _updateAllDayHeight(isCurrentView);
 
     final SystemMouseCursor currentCursor =
         _mouseCursor == SystemMouseCursors.resizeUp ||
@@ -6021,9 +6032,11 @@ class _CalendarViewState extends State<_CalendarView>
         children: <Widget>[
           GestureDetector(
             onTapUp: _handleOnTapForDay,
-            child: SizedBox(
+            child: Container(
                 height: widget.height,
                 width: widget.width,
+                // color:Colors.red,
+                // child: Container(),),
                 child: _addDayView(
                     widget.width,
                     _timeIntervalHeight * _horizontalLinesCount!,
@@ -6031,7 +6044,7 @@ class _CalendarViewState extends State<_CalendarView>
                     widget.locale,
                     isCurrentView)),
           ),
-          _getResizeShadowView()
+          // _getResizeShadowView()
         ],
       ),
     );
@@ -8276,46 +8289,46 @@ class _CalendarViewState extends State<_CalendarView>
     final double height = widget.height - viewHeaderHeight;
     return Stack(
       children: <Widget>[
-        Positioned(
-          left: 0,
-          top: 0,
-          right: 0,
-          height: viewHeaderHeight,
-          child: Container(
-            color: widget.calendar.viewHeaderStyle.backgroundColor ??
-                widget.calendarTheme.viewHeaderBackgroundColor,
-            child: RepaintBoundary(
-              child: CustomPaint(
-                painter: _ViewHeaderViewPainter(
-                    widget.visibleDates,
-                    widget.view,
-                    widget.calendar.viewHeaderStyle,
-                    widget.calendar.timeSlotViewSettings,
-                    CalendarViewHelper.getTimeLabelWidth(
-                        widget.calendar.timeSlotViewSettings.timeRulerSize,
-                        widget.view),
-                    CalendarViewHelper.getViewHeaderHeight(
-                        widget.calendar.viewHeaderHeight, widget.view),
-                    widget.calendar.monthViewSettings,
-                    isRTL,
-                    widget.locale,
-                    widget.calendarTheme,
-                    widget.calendar.todayHighlightColor ??
-                        widget.calendarTheme.todayHighlightColor,
-                    widget.calendar.todayTextStyle,
-                    widget.calendar.cellBorderColor,
-                    widget.calendar.minDate,
-                    widget.calendar.maxDate,
-                    _viewHeaderNotifier,
-                    widget.textScaleFactor,
-                    widget.calendar.showWeekNumber,
-                    widget.isMobilePlatform,
-                    widget.calendar.weekNumberStyle,
-                    widget.localizations),
-              ),
-            ),
-          ),
-        ),
+        // Positioned(
+        //   left: 0,
+        //   top: 0,
+        //   right: 0,
+        //   height: viewHeaderHeight,
+        //   child: Container(
+        //     color: widget.calendar.viewHeaderStyle.backgroundColor ??
+        //         widget.calendarTheme.viewHeaderBackgroundColor,
+        //     child: RepaintBoundary(
+        //       child: CustomPaint(
+        //         painter: _ViewHeaderViewPainter(
+        //             widget.visibleDates,
+        //             widget.view,
+        //             widget.calendar.viewHeaderStyle,
+        //             widget.calendar.timeSlotViewSettings,
+        //             CalendarViewHelper.getTimeLabelWidth(
+        //                 widget.calendar.timeSlotViewSettings.timeRulerSize,
+        //                 widget.view),
+        //             CalendarViewHelper.getViewHeaderHeight(
+        //                 widget.calendar.viewHeaderHeight, widget.view),
+        //             widget.calendar.monthViewSettings,
+        //             isRTL,
+        //             widget.locale,
+        //             widget.calendarTheme,
+        //             widget.calendar.todayHighlightColor ??
+        //                 widget.calendarTheme.todayHighlightColor,
+        //             widget.calendar.todayTextStyle,
+        //             widget.calendar.cellBorderColor,
+        //             widget.calendar.minDate,
+        //             widget.calendar.maxDate,
+        //             _viewHeaderNotifier,
+        //             widget.textScaleFactor,
+        //             widget.calendar.showWeekNumber,
+        //             widget.isMobilePlatform,
+        //             widget.calendar.weekNumberStyle,
+        //             widget.localizations),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Positioned(
           left: 0,
           top: viewHeaderHeight,
@@ -8495,46 +8508,46 @@ class _CalendarViewState extends State<_CalendarView>
         panelHeight * _allDayExpanderAnimation!.value;
     return Stack(
       children: <Widget>[
-        _addAllDayAppointmentPanel(widget.calendarTheme, isCurrentView),
-        Positioned(
-          left: isRTL ? widget.width - viewHeaderWidth : 0,
-          top: 0,
-          right: isRTL ? 0 : widget.width - viewHeaderWidth,
-          height: actualViewHeaderHeight,
-          child: Container(
-            color: widget.calendar.viewHeaderStyle.backgroundColor ??
-                widget.calendarTheme.viewHeaderBackgroundColor,
-            child: RepaintBoundary(
-              child: CustomPaint(
-                painter: _ViewHeaderViewPainter(
-                    widget.visibleDates,
-                    widget.view,
-                    widget.calendar.viewHeaderStyle,
-                    widget.calendar.timeSlotViewSettings,
-                    CalendarViewHelper.getTimeLabelWidth(
-                        widget.calendar.timeSlotViewSettings.timeRulerSize,
-                        widget.view),
-                    actualViewHeaderHeight,
-                    widget.calendar.monthViewSettings,
-                    isRTL,
-                    widget.locale,
-                    widget.calendarTheme,
-                    widget.calendar.todayHighlightColor ??
-                        widget.calendarTheme.todayHighlightColor,
-                    widget.calendar.todayTextStyle,
-                    widget.calendar.cellBorderColor,
-                    widget.calendar.minDate,
-                    widget.calendar.maxDate,
-                    _viewHeaderNotifier,
-                    widget.textScaleFactor,
-                    widget.calendar.showWeekNumber,
-                    widget.isMobilePlatform,
-                    widget.calendar.weekNumberStyle,
-                    widget.localizations),
-              ),
-            ),
-          ),
-        ),
+        // _addAllDayAppointmentPanel(widget.calendarTheme, isCurrentView),
+        // Positioned(
+        //   left: isRTL ? widget.width - viewHeaderWidth : 0,
+        //   top: 0,
+        //   right: isRTL ? 0 : widget.width - viewHeaderWidth,
+        //   height: actualViewHeaderHeight,
+        //   child: Container(
+        //     color: widget.calendar.viewHeaderStyle.backgroundColor ??
+        //         widget.calendarTheme.viewHeaderBackgroundColor,
+        //     child: RepaintBoundary(
+        //       child: CustomPaint(
+        //         painter: _ViewHeaderViewPainter(
+        //             widget.visibleDates,
+        //             widget.view,
+        //             widget.calendar.viewHeaderStyle,
+        //             widget.calendar.timeSlotViewSettings,
+        //             CalendarViewHelper.getTimeLabelWidth(
+        //                 widget.calendar.timeSlotViewSettings.timeRulerSize,
+        //                 widget.view),
+        //             actualViewHeaderHeight,
+        //             widget.calendar.monthViewSettings,
+        //             isRTL,
+        //             widget.locale,
+        //             widget.calendarTheme,
+        //             widget.calendar.todayHighlightColor ??
+        //                 widget.calendarTheme.todayHighlightColor,
+        //             widget.calendar.todayTextStyle,
+        //             widget.calendar.cellBorderColor,
+        //             widget.calendar.minDate,
+        //             widget.calendar.maxDate,
+        //             _viewHeaderNotifier,
+        //             widget.textScaleFactor,
+        //             widget.calendar.showWeekNumber,
+        //             widget.isMobilePlatform,
+        //             widget.calendar.weekNumberStyle,
+        //             widget.localizations),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         Positioned(
             top: isDayView
                 ? viewHeaderHeight + allDayExpanderHeight
@@ -8579,22 +8592,23 @@ class _CalendarViewState extends State<_CalendarView>
                             RepaintBoundary(
                                 child: _addAppointmentPainter(width, height)),
                           ])),
-                      RepaintBoundary(
-                        child: CustomPaint(
-                          painter: _TimeRulerView(
-                              _horizontalLinesCount!,
-                              _timeIntervalHeight,
-                              widget.calendar.timeSlotViewSettings,
-                              widget.calendar.cellBorderColor,
-                              isRTL,
-                              widget.locale,
-                              widget.calendarTheme,
-                              CalendarViewHelper.isTimelineView(widget.view),
-                              widget.visibleDates,
-                              widget.textScaleFactor),
-                          size: Size(timeLabelWidth, height),
+                      if (widget.enableTimeRuler)
+                        RepaintBoundary(
+                          child: CustomPaint(
+                            painter: _TimeRulerView(
+                                _horizontalLinesCount!,
+                                _timeIntervalHeight,
+                                widget.calendar.timeSlotViewSettings,
+                                widget.calendar.cellBorderColor,
+                                isRTL,
+                                widget.locale,
+                                widget.calendarTheme,
+                                CalendarViewHelper.isTimelineView(widget.view),
+                                widget.visibleDates,
+                                widget.textScaleFactor),
+                            size: Size(timeLabelWidth, height),
+                          ),
                         ),
-                      ),
                       RepaintBoundary(
                         child: CustomPaint(
                           painter: _addSelectionView(),
@@ -11423,11 +11437,11 @@ class _ViewHeaderViewPainter extends CustomPainter {
 
     final DateTime today = DateTime.now();
     if (view != CalendarView.month) {
-      _addViewHeaderForTimeSlotViews(
-          canvas, size, viewHeaderDayStyle, viewHeaderDateStyle, width, today);
+      // _addViewHeaderForTimeSlotViews(
+      //     canvas, size, viewHeaderDayStyle, viewHeaderDateStyle, width, today);
     } else {
-      _addViewHeaderForMonthView(
-          canvas, size, viewHeaderDayStyle, width, today, weekNumberPanelWidth);
+      // _addViewHeaderForMonthView(
+      //     canvas, size, viewHeaderDayStyle, width, today, weekNumberPanelWidth);
     }
   }
 
@@ -12549,7 +12563,7 @@ class _TimeRulerView extends CustomPainter {
 }
 
 class _CalendarMultiChildContainer extends Stack {
-  const _CalendarMultiChildContainer(
+  _CalendarMultiChildContainer(
       // ignore: unused_element
       {this.painter,
       List<Widget> children = const <Widget>[],
