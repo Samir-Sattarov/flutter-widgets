@@ -38,7 +38,7 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
 endfunction()
 
-set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
+set(FLUTTER_MANAGED_DIR "flutter")
 
 # Flutter library and tool build rules.
 add_subdirectory(${FLUTTER_MANAGED_DIR})
